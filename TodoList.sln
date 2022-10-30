@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33020.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList", "TodoList\TodoList.csproj", "{3B68C5A1-AC29-4D65-A70F-9AE413A79401}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticBroccoli.CLI", "AutomaticBroccoli.CLI\AutomaticBroccoli.CLI.csproj", "{246A80E8-FD98-4912-A1BF-0F88B45053AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3B68C5A1-AC29-4D65-A70F-9AE413A79401}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B68C5A1-AC29-4D65-A70F-9AE413A79401}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B68C5A1-AC29-4D65-A70F-9AE413A79401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{246A80E8-FD98-4912-A1BF-0F88B45053AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{246A80E8-FD98-4912-A1BF-0F88B45053AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{246A80E8-FD98-4912-A1BF-0F88B45053AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{246A80E8-FD98-4912-A1BF-0F88B45053AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
