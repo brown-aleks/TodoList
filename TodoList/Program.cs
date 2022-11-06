@@ -4,16 +4,23 @@
     {
         static void Main(string[] args)
         {
-            var openLoops = new List<string>();
-            string? note;
+            /*
+             *  Тестирование авторизации юзера
+             * */
+            //var user = Authorization.AddUser();
+            var user = Authorization.AuthorizeUser();
+            
 
-            Console.WriteLine("Что вас беспокоит сейчас?");
-            do
-            {
-                note = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(note));
 
-            openLoops.Add(note);
+            /*  
+             *  Тестирование консольного ввода через ConsoleHelper
+             *  
+            string[] strings = { "Первая комманда","Vtoraya kommanda","!@#*&%^(*&)(&*(" };
+            ConsoleHelper.HidePassword = false;
+            var str = ConsoleHelper.ReadLine(strings);
+            Console.WriteLine("\n" + str +"\nEescapePressed = "+ ConsoleHelper.EescapePressed);
+            Console.ReadLine();
+            */
         }
     }
 }
