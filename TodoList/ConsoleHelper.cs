@@ -14,7 +14,7 @@ namespace TodoList
         public static string? ReadLine(string[]? strings = null)
         {
             string buffer = string.Empty;
-            string displayString = string.Empty;
+            string displayString;
             var curPos = Console.GetCursorPosition();
             int pos = 0, curstr = 0, lastLength = 0;
             EescapePressed = false;
@@ -66,10 +66,10 @@ namespace TodoList
                 Console.SetCursorPosition(curPos.Left + pos, curPos.Top);
 
                 info = Console.ReadKey(true);
-                if (info.Key == ConsoleKey.Enter) { return buffer.ToString(); }
+                if (info.Key == ConsoleKey.Enter) { return buffer.ToString()??string.Empty; }
             }
             EescapePressed = true;
-            return null;
+            return string.Empty;
         }
     }
 }

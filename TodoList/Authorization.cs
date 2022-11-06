@@ -27,7 +27,7 @@ namespace TodoList
             var user = FindUser(loginPassword, out bool passwordMatches);
             if (user == null)
             {
-                Console.WriteLine("Пользователь с таким ником не найден.");
+                Console.WriteLine("\nПользователь не найден.");
                 return null;
             }
             if (passwordMatches)
@@ -36,7 +36,7 @@ namespace TodoList
             }
             else
             {
-                Console.WriteLine("Пароль не соответствует.");
+                Console.WriteLine("\nПароль не соответствует.");
                 return null;
             }
         }
@@ -48,7 +48,7 @@ namespace TodoList
 
             if (user != null)
             {
-                Console.WriteLine("Пользователь с таким ником уже существует.");
+                Console.WriteLine("\nПользователь с таким ником уже существует.");
                 return null;
             }
 
@@ -93,58 +93,34 @@ namespace TodoList
         }
         private static Tuple<string, string> InputLoginPassword(bool confirm = false)
         {
-            string? login;
-            string? pervisPas, confirmPas;
+            string login = string.Empty;
+            string pervisPas = string.Empty;
+            string confirmPas = string.Empty;
 
-            do
+            while (string.IsNullOrWhiteSpace(login) && !ConsoleHelper.EescapePressed)
             {
                 Console.Write("Введите логин: ");
-                login = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(login) || ConsoleHelper.EescapePressed);
+                login = ConsoleHelper.ReadLine() ?? string.Empty;
+            }
 
-            do
+            while (string.IsNullOrWhiteSpace(pervisPas) && !ConsoleHelper.EescapePressed)
             {
-                Console.Write("Введите пароль: ");
+                Console.Write("\nВведите пароль: ");
                 ConsoleHelper.HidePassword = true;
-                pervisPas = ConsoleHelper.ReadLine();
-            } while (string.IsNullOrWhiteSpace(pervisPas) || ConsoleHelper.EescapePressed);
+                pervisPas = ConsoleHelper.ReadLine() ?? string.Empty;
+            }
 
             if (confirm)
             {
-                do
+                while (confirmPas != pervisPas && ConsoleHelper.EescapePressed)
                 {
-                    Console.Write("Повторите пароль: ");
-                    confirmPas = ConsoleHelper.ReadLine();
-                } while (confirmPas != pervisPas || ConsoleHelper.EescapePressed);
+                    Console.Write("\nПовторите пароль: ");
+                    confirmPas = ConsoleHelper.ReadLine() ?? string.Empty;
+                };
             }
             ConsoleHelper.HidePassword = false;
 
             return new(login, pervisPas);
-
-            string inputPassword()
-            {
-                string pwd = string.Empty;
-                while (true)
-                {
-                    ConsoleKeyInfo i = Console.ReadKey(true);
-                    if (i.Key == ConsoleKey.Enter)
-                    {
-                        Console.Write('\n');
-                        break;
-                    }
-                    else if (i.Key == ConsoleKey.Backspace)
-                    {
-                        pwd = pwd.Remove(pwd.Length - 1);
-                        Console.Write("\b \b");
-                    }
-                    else
-                    {
-                        pwd += i.KeyChar;
-                        Console.Write("*");
-                    }
-                }
-                return pwd;
-            }
         }
 
     }
