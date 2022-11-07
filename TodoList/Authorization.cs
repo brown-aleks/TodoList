@@ -27,7 +27,7 @@ namespace TodoList
             var user = FindUser(loginPassword, out bool passwordMatches);
             if (user == null)
             {
-                Console.WriteLine("\nПользователь не найден.");
+                Console.WriteLine("Пользователь не найден.");
                 return null;
             }
             if (passwordMatches)
@@ -36,7 +36,7 @@ namespace TodoList
             }
             else
             {
-                Console.WriteLine("\nПароль не соответствует.");
+                Console.WriteLine("Пароль не соответствует.");
                 return null;
             }
         }
@@ -67,7 +67,6 @@ namespace TodoList
 
             return new User() { Name = newAccount.Item1, Id = newAccount.Item3 };
         }
-
         private static User? FindUser(Tuple<string, string> loginPassword, out bool passwordMatches)
         {
             passwordMatches = false;
@@ -101,21 +100,24 @@ namespace TodoList
             {
                 Console.Write("Введите логин: ");
                 login = ConsoleHelper.ReadLine() ?? string.Empty;
+                Console.WriteLine();
             }
 
             while (string.IsNullOrWhiteSpace(pervisPas) && !ConsoleHelper.EescapePressed)
             {
-                Console.Write("\nВведите пароль: ");
+                Console.Write("Введите пароль: ");
                 ConsoleHelper.HidePassword = true;
                 pervisPas = ConsoleHelper.ReadLine() ?? string.Empty;
+                Console.WriteLine();
             }
 
             if (confirm)
             {
                 while (confirmPas != pervisPas && ConsoleHelper.EescapePressed)
                 {
-                    Console.Write("\nПовторите пароль: ");
+                    Console.Write("Повторите пароль: ");
                     confirmPas = ConsoleHelper.ReadLine() ?? string.Empty;
+                    Console.WriteLine();
                 };
             }
             ConsoleHelper.HidePassword = false;

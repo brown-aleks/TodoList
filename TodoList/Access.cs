@@ -18,9 +18,25 @@ namespace TodoList
         private static readonly string _pathGroups = Path.Combine(_directory, _fileGroups);
         private static readonly JsonSerializerOptions optionsJson;
 
-        private static readonly List<Group> _groups = new();
+        private static List<Group>? _groups = null;
 
-        public static List<Group> Groups { get; } = _groups;
+        public static List<Group>? GetGroups()
+        {
+            _groups ??= LoadGroupsAsync().Result;
+            return _groups;
+        }
+        public static void AddGroup(Group group)
+        {
+            _groups ??= new();
+            _groups.Add(group);
+            var save = SaveGroupsAsync();
+        }
+        public static void AddRangeGroup(List<Group> groups)
+        {
+            _groups ??= new();
+            _groups.AddRange(groups);
+            var save = SaveGroupsAsync();
+        }
         static Access()
         {
             optionsJson = new JsonSerializerOptions
@@ -29,36 +45,27 @@ namespace TodoList
                 WriteIndented = true
             };
 
-            _groups = LoadGroups();
-
             //_groups.Clear();
-            /*
-            _groups.Add(new Group() {
-                Id = Guid.NewGuid(),
-                Name = "Guest",
-                Description = "Группа гость. Обратитесь к адинистратору",
-                UsrsId = new List<Guid> { new Guid("914b7127-1fb3-4e5b-9321-b0a3f54a4630"),
-                                          new Guid("1b75186e-1549-4fb5-ab48-ee5334e9ea84"),
-                                          new Guid("5ab8df46-0066-4c68-be30-5b2be16e0aaa") },
-                ActionsKey = new List<string> { "C","R","U","D" } });
+            
+            /*//
             
 
             var groups = LoadGroups();
             if (groups != null)
             {
                 _groups.AddRange(groups);
-            }//*/
+            }//
 
-            //SaveGroups();
-            
+            SaveGroups();
+            */
         }
-        private static List<Group> LoadGroups()
+        private static async Task<List<Group>?> LoadGroupsAsync()
         {
             if (!File.Exists(_pathGroups)) { return new(); }
 
-            List<Group> groups = new();
+            List<Group>? groups = new();
 
-            using (BinaryReader reader = new BinaryReader(File.Open(_pathGroups, FileMode.Open)))
+            /*using (BinaryReader reader = new BinaryReader(File.Open(_pathGroups, FileMode.Open)))
             {
                 while (reader.PeekChar() > -1)
                 {
@@ -72,16 +79,24 @@ namespace TodoList
                         groups.Add(group);
                     }
                 }
+            }*/
+
+            using (StreamReader reader = new(_pathGroups))
+            {
+                    string json = await reader.ReadToEndAsync();
+
+                    //string json = Сryptography.Decrypt(json);
+                    groups = JsonSerializer.Deserialize<List<Group>>(json);
             }
             return groups;
         }
-        private static bool SaveGroups()
+        private static async Task<bool> SaveGroupsAsync()
         {
             if (_groups == null || _groups.Count < 1) { return false; }
 
             Directory.CreateDirectory(_directory);
-
-            using (BinaryWriter writer = new BinaryWriter(File.Open(_pathGroups, FileMode.Create)))
+            
+            /*using (BinaryWriter writer = new BinaryWriter(File.Open(_pathGroups, FileMode.Create)))
             {
                 foreach (var group in _groups)
                 {
@@ -91,10 +106,18 @@ namespace TodoList
 
                     writer.Write(crypt);
                 }
-            }
+            }*/
 
+            using (StreamWriter writer = new(_pathGroups, false))
+            {
+                var json = JsonSerializer.Serialize(_groups, optionsJson);
+
+                //json = Сryptography.Encrypt(json);
+
+                await writer.WriteLineAsync(json);
+                
+            }
             return true;
         }
-
     }
 }

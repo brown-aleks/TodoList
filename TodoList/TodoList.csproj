@@ -11,4 +11,13 @@
     <None Remove="Program.cs~RF1a502138.TMP" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SecretDate\Groups.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SecretDate\Users.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
