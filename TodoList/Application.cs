@@ -17,11 +17,11 @@ namespace TodoList
                 startStr = ConsoleHelper.ReadLine();
                 Console.WriteLine();
 
-                if (startStr == "L" || startStr == "l" || startStr == "Д" || startStr == "д")
+                if (startStr?.ToLower() == "l" || startStr?.ToLower() == "д")
                 {
                     User = Authorization.AuthorizeUser();
                 }
-                if (startStr == "R" || startStr == "r" || startStr == "К" || startStr == "к")
+                if (startStr?.ToLower() == "r" || startStr?.ToLower() == "к")
                 {
                     User = Authorization.AddUser();
                 }
@@ -41,7 +41,7 @@ namespace TodoList
                     }
                 }
 
-            } while (startStr == "Q" || startStr == "q" || ConsoleHelper.EescapePressed);
+            } while (startStr?.ToLower() == "q" || ConsoleHelper.EescapePressed);
         }
     }
 }
