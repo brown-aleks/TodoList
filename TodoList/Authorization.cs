@@ -58,7 +58,7 @@ namespace TodoList
 
             var json = JsonSerializer.Serialize(newAccount, optionsJson);
 
-            var crypt = Сryptography.Encrypt(json);
+            var crypt = Cryptography.Encrypt(json);
 
             using (BinaryWriter writer = new BinaryWriter(File.Open(_pathUsers, FileMode.Append)))
             {
@@ -78,7 +78,7 @@ namespace TodoList
                 {
                     string crypt = reader.ReadString();
 
-                    string json = Сryptography.Decrypt(crypt);
+                    string json = Cryptography.Decrypt(crypt);
                     var account = JsonSerializer.Deserialize<Tuple<string, string, Guid>>(json);
 
                     if (loginPassword.Item1 == account?.Item1)

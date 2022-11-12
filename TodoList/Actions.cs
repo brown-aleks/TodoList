@@ -24,7 +24,7 @@
             });
             _actions.Add("U", new()
             {
-                NameAct = "Просмотр имеющихся задачь",
+                NameAct = "Просмотр имеющихся задач",
                 OperationAct = () =>
                 {
                     Console.WriteLine("Действия по удалению задачи");

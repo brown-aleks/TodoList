@@ -71,7 +71,7 @@ namespace TodoList
                 {
                     string crypt = reader.ReadString();
 
-                    string json = Сryptography.Decrypt(crypt);
+                    string son = Сryptography.Decrypt(crypt);
                     var group = JsonSerializer.Deserialize<Group>(json);
 
                     if (group != null)

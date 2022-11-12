@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TodoList
 {
-    internal class Сryptography
+    internal class Cryptography
     {
         private static byte[] key = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
         public static string Encrypt(string text)

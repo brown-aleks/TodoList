@@ -31,9 +31,9 @@ namespace TodoList
                     Console.WriteLine($"{User.Id}  {User.Name}  {User.Email}");
                     Console.WriteLine("Вы состоите в группах");
 
-                    var groups = Access.GetGroups()?.Where(g => g.UsrsId.Any(a => a == User.Id)) ?? new List<Group>();
+                    var groups = Access.GetGroups()?.Where(g => g.UsersId.Any(a => a == User.Id)) ?? new List<Group>();
 
-                    //  TODO: Тут реализовать выборку доступных комманд для юзера из groups
+                    //  TODO: Тут реализовать выборку доступных команд для пользователя из groups
 
                     foreach (var group in groups)
                     {
