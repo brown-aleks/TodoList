@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList", "TodoList\TodoLi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomaticBroccoli.CLI", "AutomaticBroccoli.CLI\AutomaticBroccoli.CLI.csproj", "{246A80E8-FD98-4912-A1BF-0F88B45053AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.WebAPI", "ToDoList.WebAPI\ToDoList.WebAPI.csproj", "{775AA284-4B63-4749-BB79-10FF1768BBE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoList.API", "ToDoList.API\ToDoList.API.csproj", "{775AA284-4B63-4749-BB79-10FF1768BBE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

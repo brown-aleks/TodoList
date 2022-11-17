@@ -1,6 +1,6 @@
-using ToDoList.WebAPI.Services;
+using ToDoList.API.Services;
 
-namespace ToDoList.WebAPI
+namespace ToDoList.API
 {
     public class Program
     {
@@ -18,6 +18,9 @@ namespace ToDoList.WebAPI
 
             var app = builder.Build();
 
+            Console.ReadKey();
+            Console.ReadLine();
+            
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

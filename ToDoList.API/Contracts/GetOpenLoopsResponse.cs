@@ -1,6 +1,6 @@
-﻿using ToDoList.WebAPI.Models;
+﻿using ToDoList.API.Models;
 
-namespace ToDoList.WebAPI.Contracts
+namespace ToDoList.API.Contracts
 {
     public class GetOpenLoopsResponse
     {

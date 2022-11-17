@@ -2,9 +2,9 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
-using ToDoList.WebAPI.Models;
+using ToDoList.API.Models;
 
-namespace ToDoList.WebAPI.Services
+namespace ToDoList.API.Services
 {
     public class OpenLoopsAccess : IOpenLoopsAccess
     {

@@ -1,4 +1,4 @@
-﻿namespace ToDoList.WebAPI.Contracts
+﻿namespace ToDoList.API.Contracts
 {
     public class CreateOpenLoopRequest
     {

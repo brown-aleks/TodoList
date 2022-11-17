@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mime;
-using ToDoList.WebAPI.Contracts;
-using ToDoList.WebAPI.Models;
-using ToDoList.WebAPI.Services;
+using ToDoList.API.Contracts;
+using ToDoList.API.Models;
+using ToDoList.API.Services;
 
-namespace ToDoList.WebAPI.Controllers
+namespace ToDoList.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -1,6 +1,6 @@
-﻿using ToDoList.WebAPI.Models;
+﻿using ToDoList.API.Models;
 
-namespace ToDoList.WebAPI.Services
+namespace ToDoList.API.Services
 {
     public interface IOpenLoopsAccess
     {

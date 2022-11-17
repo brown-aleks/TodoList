@@ -1,11 +1,9 @@
-﻿namespace ToDoList.WebAPI.Models
+﻿namespace ToDoList.API.Contracts
 {
-    public class OpenLoop
+    public class UpdateOpenLoopRequest
     {
-        public Guid Id { get; set; }
         public string Note { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? СompletDate { get; set; }
         public bool Сomplet { get; set; }
     }
