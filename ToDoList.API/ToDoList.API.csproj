@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="README.md~RF12ba8d55.TMP" />
+    <None Remove="README.md~RF1636a3b9.TMP" />
     <None Remove="Services\IOpenLoopsAccess.cs~RFf9c0d32.TMP" />
   </ItemGroup>
 
