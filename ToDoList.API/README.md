@@ -1,6 +1,6 @@
-﻿Тестовая генерация картинок с диаграммы. =)
+Тестовая генерация картинок с диаграммы. =)
 
 ![test2.drawio](https://github.com/brown-aleks/TodoList/blob/master/ToDoList.API/test2.drawio.png)
 
-[!INCLUDE [<test2.drawio>](<test2.drawio.html>)]
+[!INCLUDE [<test2.drawio>](<https://github.com/brown-aleks/TodoList/blob/master/ToDoList.API/test2.drawio.html>)]
 ![Visit](https://github.com/brown-aleks/TodoList/blob/master/ToDoList.API/test2.drawio.html)
