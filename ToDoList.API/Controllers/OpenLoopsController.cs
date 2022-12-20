@@ -1,41 +1,36 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Net.Mime;
-using ToDoList.API.Contracts;
+using Microsoft.IdentityModel.Tokens;
 using ToDoList.API.Models;
-using ToDoList.API.Services;
 
 namespace ToDoList.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [Consumes(MediaTypeNames.Application.Json)]
-    public class OpenLoopsController :  ControllerBase
+    [Route("[controller]")]
+    [Authorize]
+    public class OpenLoopsController : Controller
     {
         private readonly ILogger<OpenLoopsController> _logger;
-        private readonly IOpenLoopsAccess _openLoopsAccess;
+        private readonly OpenLoopDbContext _openLoopDbContext;
 
-        public OpenLoopsController(ILogger<OpenLoopsController> loger, IOpenLoopsAccess openCasesAccess)
+        public OpenLoopsController(ILogger<OpenLoopsController> logger, OpenLoopDbContext openLoopDbContext)
         {
-            _logger = loger;
-            _openLoopsAccess = openCasesAccess;
+            _logger = logger;
+            _openLoopDbContext = openLoopDbContext;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(GetOpenLoopsResponse), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetOpenLoops()
+        public ActionResult<IEnumerable<OpenLoop>> GetOpenLoops()
         {
-            var response = _openLoopsAccess.Get().Clone();
-            return Ok(response);
+            return Ok(_openLoopDbContext.OpenLoop.ToList());
         }
 
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetOpenLoop(Guid id)
-        {
-            var openLoop = _openLoopsAccess.Get(id);
 
+        [HttpGet("{id}")]
+        public ActionResult<OpenLoop> GetOpenLoops(string id)
+        {
+            var guid = new Guid(id);
+            var openLoop = _openLoopDbContext.OpenLoop.FirstOrDefault(a => a.Id.Equals(guid));
             if (openLoop == null)
             {
                 return NotFound();
@@ -45,56 +40,78 @@ namespace ToDoList.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> CreateOpenLoopAsync([FromBody] CreateOpenLoopRequest request)
+        public ActionResult<OpenLoop> InsertOpenLoop(OpenLoopRequest openLoopRequest)
         {
-            var openLoopId = await _openLoopsAccess.AddAsync(new OpenLoop()
+            OpenLoop openLoop = new()
             {
-                Note = request.Note,
-                Description = request.Description,
-                ÑompletDate = request.ÑompletDate
-            } );
-            return Ok(openLoopId);
+                Id = Guid.NewGuid(),
+                CreatedDateUtc = DateTime.UtcNow,
+                Note = openLoopRequest.Note,
+                Description = openLoopRequest.Description,
+                Ñomplet = openLoopRequest.Ñomplet
+            };
+
+            bool successPars = DateTimeOffset.TryParse(openLoopRequest.ÑompletDate, out DateTimeOffset dateTimeOffset);
+            openLoop.ÑompletDateUtc = successPars ? dateTimeOffset.UtcDateTime : DateTime.MinValue;
+
+            _openLoopDbContext.OpenLoop.Add(openLoop);
+            _openLoopDbContext.SaveChanges();
+            return CreatedAtAction(nameof(GetOpenLoops), new { id = openLoop.Id }, openLoop);
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> PutOpenLoopAsync(Guid id, [FromBody] UpdateOpenLoopRequest request)
+        public ActionResult<OpenLoop> UpdateOpenLoop(string id, OpenLoopRequest openLoopRequest)
         {
-            if (request is null || request.Note is null || request.Description is null) // êàêàÿ ëèáî äðóãàÿ ïðîâåðêà ïðîâåðêà âõîäÿùèõ äàííûõ.
+            bool successParse = Guid.TryParse(id, out Guid guid);
+            if (!successParse)
             {
-                return BadRequest();
+                return BadRequest(id);
             }
 
-            var openLoopId = await _openLoopsAccess.UpdateAsync(new OpenLoop()
+            successParse = DateTimeOffset.TryParse(openLoopRequest.ÑompletDate, out DateTimeOffset dateTimeOffset);
+            if (!successParse)
             {
-                Id = id,
-                Note = request.Note,
-                Description = request.Description,
-                ÑompletDate = request.ÑompletDate,
-                Ñomplet = request.Ñomplet
-            });
+                return BadRequest(openLoopRequest.ÑompletDate);
+            }
 
-            if (openLoopId == Guid.Empty)
+            var openLoopToUpdate = _openLoopDbContext.OpenLoop.FirstOrDefault(a => a.Id.Equals(guid));
+            if (openLoopToUpdate == null)
             {
                 return NotFound();
             }
+
+            openLoopToUpdate.Description = openLoopRequest.Description;
+            openLoopToUpdate.Note = openLoopRequest.Note;
+            openLoopToUpdate.ÑompletDateUtc = dateTimeOffset.UtcDateTime;
+            openLoopToUpdate.Ñomplet = openLoopRequest.Ñomplet;
+
+            _openLoopDbContext.OpenLoop.Update(openLoopToUpdate);
+            _openLoopDbContext.SaveChanges();
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> DeleteOpenLoop(Guid id)
+        public ActionResult DeleteOpenLoop(string id)
         {
-            var openLoopId = await _openLoopsAccess.DeleteAsync(id);
+            bool successParse = Guid.TryParse(id, out Guid guid);
+            if (!successParse)
+            {
+                return BadRequest(id);
+            }
 
-            if (openLoopId == Guid.Empty)
+            var openLoopToDelete = _openLoopDbContext.OpenLoop.FirstOrDefault(a => a.Id.Equals(guid));
+
+            if (openLoopToDelete == null)
             {
                 return NotFound();
             }
+
+            _openLoopDbContext.OpenLoop.Remove(openLoopToDelete);
+            _openLoopDbContext.SaveChanges();
+
             return NoContent();
         }
 
     }
-
 }
