@@ -1,10 +1,10 @@
-﻿namespace ToDoList.API.Contracts
+﻿namespace ToDoList.API.Models
 {
-    public class UpdateOpenLoopRequest
+    public class OpenLoopRequest
     {
         public string Note { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public DateTimeOffset? СompletDate { get; set; }
+        public string СompletDate { get; set; } = DateTimeOffset.UtcNow.ToString();
         public bool Сomplet { get; set; }
     }
 }
