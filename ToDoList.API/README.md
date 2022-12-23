@@ -67,5 +67,6 @@
     ```
 +   `DELETE/OpenLoops/{id}` - Удаляем одну запись из БД, соответствующую `{id}`
 
-
+![ToDoList.API.jpeg](ToDoList.API.jpeg)
+---
 ![ToDoList.API.gif](ToDoList.API.gif)
