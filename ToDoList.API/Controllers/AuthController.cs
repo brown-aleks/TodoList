@@ -7,19 +7,31 @@ using ToDoList.API.Models;
 
 namespace ToDoList.API.Controllers
 {
+    /// <summary>
+    /// Группа методов для аутентификации
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        public IConfiguration _configuration;
+        private IConfiguration _configuration;
         private UserManager<User> _userManager;
-
+        /// <summary>
+        /// Внедрение зависимостей
+        /// </summary>
+        /// <param name="config">Конфигурации приложения<param>
+        /// <param name="userManager">User Manager из Identity</param>
         public AuthController(IConfiguration config, UserManager<User> userManager)
         {
             _configuration = config;
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Аутентификация в системе
+        /// </summary>
+        /// <param name="request">Строка JSON с полями логин и пароль</param>
+        /// <returns>В случае успешной аутентификации возвращает JSON с токинами AccessToken и RefreshToken</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
@@ -44,14 +56,22 @@ namespace ToDoList.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Любой пользователь может проверить свой токен.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("tokenValidate")]
         [Authorize]
-        public async Task<IActionResult> TokenValidate()
+        public async Task<IActionResult> TokenValidate()    //  знаю что async Task<> тут лишние. Изначально предполагалось что метод будет более сложным.
         {
-            //Эта конечная точка создана, чтобы любой пользователь мог проверить свой токен.
             return Ok("Token is valid");
         }
 
+        /// <summary>
+        /// Регистрирует нового пользователя в системе.
+        /// </summary>
+        /// <param name="registerRequest"> Ожидается объект типа RegisterRequest сериализованный в формат JSON</param>
+        /// <returns></returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
         {
@@ -92,6 +112,11 @@ namespace ToDoList.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Обновляет токины с истёкшим сроком валидности.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(RefreshRequest request)
         {
@@ -119,6 +144,11 @@ namespace ToDoList.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Отзыв токена RefreshToken из БД. После чего сессия аутентификации считается закрытой. Для дальнейшей работы с API будет необходимо проходить аутентификацию через метод Login.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("revoke")]
         [Authorize]
         public async Task<IActionResult> Revoke(RevokeRequest request)

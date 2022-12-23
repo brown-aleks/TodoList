@@ -5,6 +5,9 @@ using ToDoList.API.Models;
 
 namespace ToDoList.API.Controllers
 {
+    /// <summary>
+    /// Группа методов CRUD для работы с OpenLoops
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize]
@@ -12,20 +15,32 @@ namespace ToDoList.API.Controllers
     {
         private readonly ILogger<OpenLoopsController> _logger;
         private readonly OpenLoopDbContext _openLoopDbContext;
-
+        /// <summary>
+        /// Внедрённые зависимости
+        /// </summary>
+        /// <param name="logger">Сервис логирования</param>
+        /// <param name="openLoopDbContext">Контекст базы данных</param>
         public OpenLoopsController(ILogger<OpenLoopsController> logger, OpenLoopDbContext openLoopDbContext)
         {
             _logger = logger;
             _openLoopDbContext = openLoopDbContext;
         }
 
+        /// <summary>
+        /// Запрос всех записей из БД, сущности OpenLoop
+        /// </summary>
+        /// <returns>List элементами которого являются OpenLoop</returns>
         [HttpGet]
         public ActionResult<IEnumerable<OpenLoop>> GetOpenLoops()
         {
             return Ok(_openLoopDbContext.OpenLoop.ToList());
         }
 
-
+        /// <summary>
+        /// Запрос одной записи из БД, по соответствующему идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор записи, которую нужно извлечь из БД</param>
+        /// <returns>Возврат экземпляр объекта openLoop</returns>
         [HttpGet("{id}")]
         public ActionResult<OpenLoop> GetOpenLoops(string id)
         {
@@ -39,6 +54,11 @@ namespace ToDoList.API.Controllers
             return Ok(openLoop);
         }
 
+        /// <summary>
+        /// Добавляет новую запись в БД.
+        /// </summary>
+        /// <param name="openLoopRequest">Строка формата JSON, со значениями полей новой задачи.</param>
+        /// <returns>вновь созданная запись в БД</returns>
         [HttpPost]
         public ActionResult<OpenLoop> InsertOpenLoop(OpenLoopRequest openLoopRequest)
         {
@@ -59,6 +79,12 @@ namespace ToDoList.API.Controllers
             return CreatedAtAction(nameof(GetOpenLoops), new { id = openLoop.Id }, openLoop);
         }
 
+        /// <summary>
+        /// Обновляет существующую запись в БД.
+        /// </summary>
+        /// <param name="id">Идентификатор записи которую нужно обновить.</param>
+        /// <param name="openLoopRequest">Строка формата JSON, с новыми значениями полей.</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public ActionResult<OpenLoop> UpdateOpenLoop(string id, OpenLoopRequest openLoopRequest)
         {
@@ -91,6 +117,11 @@ namespace ToDoList.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Удаляет запись из БД.
+        /// </summary>
+        /// <param name="id">Идентификатор задачи которую следует удалить</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public ActionResult DeleteOpenLoop(string id)
         {

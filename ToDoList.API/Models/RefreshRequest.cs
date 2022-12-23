@@ -2,6 +2,9 @@
 
 namespace ToDoList.API.Models
 {
+    /// <summary>
+    /// Модель запроса на обновление токинов.
+    /// </summary>
     public class RefreshRequest
     {
         [Required]

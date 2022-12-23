@@ -2,6 +2,9 @@
 
 namespace ToDoList.API.Models
 {
+    /// <summary>
+    /// Модель для отзыва токена
+    /// </summary>
     public class RevokeRequest
     {
         [Required]

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -24,15 +25,15 @@ namespace ToDoList.API
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
-                options.Password.RequireDigit = false;              //  Требовать хотябы одну цыфру
-                options.Password.RequireLowercase = false;          //  Требовать хотябы одну маленькую букву
-                options.Password.RequireNonAlphanumeric = false;    //  Требовать хотябы один символ отличающийся от буквенно-цифрового
-                options.Password.RequireUppercase = false;          //  Требовать хотябы одну заглавную букву
+                options.Password.RequireDigit = false;              //  Требовать хотя бы одну цифру
+                options.Password.RequireLowercase = false;          //  Требовать хотя бы одну маленькую букву
+                options.Password.RequireNonAlphanumeric = false;    //  Требовать хотя бы один символ отличающийся от буквенно-цифрового
+                options.Password.RequireUppercase = false;          //  Требовать хотя бы одну заглавную букву
                 options.Password.RequiredLength = 6;                //  Требовать минимальную длинну пароля
                 options.Password.RequiredUniqueChars = 1;           //  Требовать минимальное количество уникальных символов
             });
 
-            //add Article db context
+            //add OpenLoop db context
             builder.Services.AddDbContext<OpenLoopDbContext>(options =>
                 options.UseNpgsql(builder.Configuration["ConnectionStrings:PostgreSQLOpenLoopsConnection"]));
 
@@ -52,7 +53,26 @@ namespace ToDoList.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(option =>
             {
-                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+                var basePath = AppContext.BaseDirectory;
+                var xmlPath = Path.Combine(basePath, "ToDoList.API.xml");
+                option.IncludeXmlComments(xmlPath);
+
+                option.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Demo API",
+                    Description = "Демонстрационный API с идентификацией и пользовательским токеном JWT",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Пишите мне в Телеграмм",
+                        Url = new Uri("https://t.me/brown_aleks")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Тип лицензии ИКХССВ - Используйте Кто Хотите, Сами Себе Виноваты. =)",
+                        Url = new Uri("https://example.com/license")
+                    }
+                });
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
