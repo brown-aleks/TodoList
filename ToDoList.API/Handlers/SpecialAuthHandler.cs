@@ -4,13 +4,14 @@ using Microsoft.Extensions.Options;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Net.Http.Headers;
+using ToDoList.API.Data;
 
 namespace ToDoList.API.Handlers
 {
     public class SpecialAuthHandler : AuthenticationHandler<SpecialAuthenticationSchemeOptions>
     {
         private IConfiguration _config;
-        private UserManager<User> _userManager;
+        private UserManager<AppUser> _userManager;
 
         public SpecialAuthHandler(
             IOptionsMonitor<SpecialAuthenticationSchemeOptions> options,
@@ -18,7 +19,7 @@ namespace ToDoList.API.Handlers
             UrlEncoder encoder,
             ISystemClock clock,
             IConfiguration config,
-            UserManager<User> userManager)
+            UserManager<AppUser> userManager)
             : base(options, logger, encoder, clock)
         {
             _config = config;

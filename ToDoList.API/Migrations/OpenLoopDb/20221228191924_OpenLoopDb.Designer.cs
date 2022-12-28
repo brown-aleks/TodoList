@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using ToDoList.API.Models;
+using ToDoList.API.Data;
 
 #nullable disable
 
-namespace ToDoList.API.Migrations
+namespace ToDoList.API.Migrations.OpenLoopDb
 {
     [DbContext(typeof(OpenLoopDbContext))]
-    partial class OpenLoopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221228191924_OpenLoopDb")]
+    partial class OpenLoopDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,28 +25,35 @@ namespace ToDoList.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ToDoList.API.Models.OpenLoop", b =>
+            modelBuilder.Entity("ToDoList.API.Data.OpenLoop", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Complete")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CompleteDateUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("CreatedDateUtc")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("Сomplet")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("СompletDateUtc")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 

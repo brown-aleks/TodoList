@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
-
-namespace ToDoList.API.Models
+﻿namespace ToDoList.API.Data
 {
     /// <summary>
     /// Модель представляющая сущность открытой задачи.
@@ -27,10 +24,19 @@ namespace ToDoList.API.Models
         /// <summary>
         /// Планируемая и/или фактическая дата завершения задачи. Устанавливается автором или пользователем имеющим право на редактирование.
         /// </summary>
-        public DateTime СompletDateUtc { get; set; }
+        public DateTime CompleteDateUtc { get; set; }
         /// <summary>
         /// Состояние задачи на текущий момент. True - выполнена. False - выполняется, или не приступали к выполнению.
         /// </summary>
-        public bool Сomplet { get; set; }
+        public bool Complete { get; set; }
+        /// <summary>
+        /// Идентификатор пользователя, который создал задачу.
+        /// </summary>
+        public string CreatorId { get; set; } = string.Empty;
+        /// <summary>
+        /// Помечен на удаление.
+        /// </summary>
+        public bool IsDeleted { get; set; }
+
     }
 }

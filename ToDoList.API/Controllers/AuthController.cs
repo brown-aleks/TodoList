@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using ToDoList.API.Data;
 using ToDoList.API.Handlers;
 using ToDoList.API.Models;
 
@@ -15,13 +16,13 @@ namespace ToDoList.API.Controllers
     public class AuthController : ControllerBase
     {
         private IConfiguration _configuration;
-        private UserManager<User> _userManager;
+        private UserManager<AppUser> _userManager;
         /// <summary>
         /// Внедрение зависимостей
         /// </summary>
         /// <param name="config">Конфигурации приложения<param>
-        /// <param name="userManager">User Manager из Identity</param>
-        public AuthController(IConfiguration config, UserManager<User> userManager)
+        /// <param name="userManager">AppUser Manager из Identity</param>
+        public AuthController(IConfiguration config, UserManager<AppUser> userManager)
         {
             _configuration = config;
             _userManager = userManager;
@@ -90,10 +91,10 @@ namespace ToDoList.API.Controllers
 
             if (isUserNameAlreadyRegistered)
             {
-                return Conflict($"User Name {registerRequest.Username} is already registered.");
+                return Conflict($"AppUser Name {registerRequest.Username} is already registered.");
             }
 
-            var newUser = new User
+            var newUser = new AppUser
             {
                 Email = registerRequest.Email,
                 UserName = registerRequest.Username,
@@ -104,7 +105,7 @@ namespace ToDoList.API.Controllers
 
             if (result.Succeeded)
             {
-                return Ok("User created successfully"); 
+                return Ok("AppUser created successfully"); 
             }
             else
             {
@@ -174,7 +175,7 @@ namespace ToDoList.API.Controllers
             return Ok("Refresh token is revoked");
         }
 
-        private async Task<AuthResponse> GetTokens(User user)
+        private async Task<AuthResponse> GetTokens(AppUser user)
         {
             var specialTokenHandler = new SpecialTokenHandler();
             var accessToken = specialTokenHandler.GetAccessToken(user, _configuration);
@@ -190,4 +191,5 @@ namespace ToDoList.API.Controllers
             return BadRequest(errMsgs);
         }
     }
+
 }

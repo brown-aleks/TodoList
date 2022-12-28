@@ -16,10 +16,10 @@
         /// <summary>
         /// Планируемая и/или фактическая дата завершения задачи. Устанавливается автором или пользователем имеющим право на редактирование.
         /// </summary>
-        public string СompletDate { get; set; } = DateTimeOffset.UtcNow.ToString();
+        public string CompleteDate { get; set; } = DateTimeOffset.UtcNow.ToString();
         /// <summary>
         /// Состояние задачи на текущий момент. True - выполнена. False - выполняется, или не приступали к выполнению.
         /// </summary>
-        public bool Сomplet { get; set; }
+        public bool Complete { get; set; }
     }
 }

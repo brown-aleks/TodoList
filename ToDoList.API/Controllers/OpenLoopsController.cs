@@ -1,92 +1,86 @@
-using Microsoft.AspNetCore.Authorization;
+п»їusing Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using System;
+using ToDoList.API.Data;
 using ToDoList.API.Models;
+using ToDoList.API.Services;
 
 namespace ToDoList.API.Controllers
 {
     /// <summary>
-    /// Группа методов CRUD для работы с OpenLoops
+    /// Р“СЂСѓРїРїР° РјРµС‚РѕРґРѕРІ CRUD РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ OpenLoops
     /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize]
     public class OpenLoopsController : Controller
     {
-        private readonly ILogger<OpenLoopsController> _logger;
-        private readonly OpenLoopDbContext _openLoopDbContext;
+        private readonly ILogger<OpenLoopsController> logger;
+        private readonly OpenLoopService openLoopService;
+
         /// <summary>
-        /// Внедрённые зависимости
+        /// Р’РЅРµРґСЂС‘РЅРЅС‹Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё
         /// </summary>
-        /// <param name="logger">Сервис логирования</param>
-        /// <param name="openLoopDbContext">Контекст базы данных</param>
-        public OpenLoopsController(ILogger<OpenLoopsController> logger, OpenLoopDbContext openLoopDbContext)
+        /// <param name="logger">РЎРµСЂРІРёСЃ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ</param>
+        /// <param name="openLoopService"></param>
+        public OpenLoopsController(
+            ILogger<OpenLoopsController> logger,
+            OpenLoopService openLoopService)
         {
-            _logger = logger;
-            _openLoopDbContext = openLoopDbContext;
+            this.logger = logger;
+            this.openLoopService = openLoopService;
         }
 
         /// <summary>
-        /// Запрос всех записей из БД, сущности OpenLoop
+        /// Р—Р°РїСЂРѕСЃ РІСЃРµС… Р·Р°РїРёСЃРµР№ РёР· Р‘Р”, СЃСѓС‰РЅРѕСЃС‚Рё OpenLoop
         /// </summary>
-        /// <returns>List элементами которого являются OpenLoop</returns>
+        /// <returns>List - СЌР»РµРјРµРЅС‚Р°РјРё РєРѕС‚РѕСЂРѕРіРѕ СЏРІР»СЏСЋС‚СЃСЏ OpenLoop</returns>
         [HttpGet]
-        public ActionResult<IEnumerable<OpenLoop>> GetOpenLoops()
+        public async Task<ActionResult<IEnumerable<OpenLoop>>> GetOpenLoops()
         {
-            return Ok(_openLoopDbContext.OpenLoop.ToList());
+            var openLoops = await openLoopService.GetAsync();
+            return Ok(openLoops);
         }
 
         /// <summary>
-        /// Запрос одной записи из БД, по соответствующему идентификатору.
+        /// Р—Р°РїСЂРѕСЃ РѕРґРЅРѕР№ Р·Р°РїРёСЃРё РёР· Р‘Р”, РїРѕ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРјСѓ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ.
         /// </summary>
-        /// <param name="id">Идентификатор записи, которую нужно извлечь из БД</param>
-        /// <returns>Возврат экземпляр объекта openLoop</returns>
+        /// <param name="id">РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё, РєРѕС‚РѕСЂСѓСЋ РЅСѓР¶РЅРѕ РёР·РІР»РµС‡СЊ РёР· Р‘Р”</param>
+        /// <returns>Р’РѕР·РІСЂР°С‚ СЌРєР·РµРјРїР»СЏСЂ РѕР±СЉРµРєС‚Р° openLoop</returns>
         [HttpGet("{id}")]
-        public ActionResult<OpenLoop> GetOpenLoops(string id)
+        public async Task<ActionResult<OpenLoop>> GetOpenLoop(string id)
         {
             var guid = new Guid(id);
-            var openLoop = _openLoopDbContext.OpenLoop.FirstOrDefault(a => a.Id.Equals(guid));
+            var openLoop = await openLoopService.GetAsync(guid);
             if (openLoop == null)
             {
                 return NotFound();
             }
-
             return Ok(openLoop);
         }
 
         /// <summary>
-        /// Добавляет новую запись в БД.
+        /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІСѓСЋ Р·Р°РїРёСЃСЊ РІ Р‘Р”.
         /// </summary>
-        /// <param name="openLoopRequest">Строка формата JSON, со значениями полей новой задачи.</param>
-        /// <returns>вновь созданная запись в БД</returns>
+        /// <param name="openLoopRequest">РЎС‚СЂРѕРєР° С„РѕСЂРјР°С‚Р° JSON, СЃРѕ Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕР»РµР№ РЅРѕРІРѕР№ Р·Р°РґР°С‡Рё.</param>
+        /// <returns>РІРЅРѕРІСЊ СЃРѕР·РґР°РЅРЅР°СЏ Р·Р°РїРёСЃСЊ РІ Р‘Р”</returns>
         [HttpPost]
-        public ActionResult<OpenLoop> InsertOpenLoop(OpenLoopRequest openLoopRequest)
+        public async Task<IActionResult> CreateOpenLoop(OpenLoopRequest openLoopRequest)
         {
-            OpenLoop openLoop = new()
-            {
-                Id = Guid.NewGuid(),
-                CreatedDateUtc = DateTime.UtcNow,
-                Note = openLoopRequest.Note,
-                Description = openLoopRequest.Description,
-                Сomplet = openLoopRequest.Сomplet
-            };
-
-            bool successPars = DateTimeOffset.TryParse(openLoopRequest.СompletDate, out DateTimeOffset dateTimeOffset);
-            openLoop.СompletDateUtc = successPars ? dateTimeOffset.UtcDateTime : DateTime.MinValue;
-
-            _openLoopDbContext.OpenLoop.Add(openLoop);
-            _openLoopDbContext.SaveChanges();
-            return CreatedAtAction(nameof(GetOpenLoops), new { id = openLoop.Id }, openLoop);
+            var openLoop = await openLoopService.CreateAsync(openLoopRequest, User);
+            return CreatedAtAction(nameof(GetOpenLoop), new { id = openLoop.Id }, openLoop);
         }
 
         /// <summary>
-        /// Обновляет существующую запись в БД.
+        /// РћР±РЅРѕРІР»СЏРµС‚ СЃСѓС‰РµСЃС‚РІСѓСЋС‰СѓСЋ Р·Р°РїРёСЃСЊ РІ Р‘Р”.
         /// </summary>
-        /// <param name="id">Идентификатор записи которую нужно обновить.</param>
-        /// <param name="openLoopRequest">Строка формата JSON, с новыми значениями полей.</param>
+        /// <param name="id">РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё РєРѕС‚РѕСЂСѓСЋ РЅСѓР¶РЅРѕ РѕР±РЅРѕРІРёС‚СЊ.</param>
+        /// <param name="openLoopRequest">РЎС‚СЂРѕРєР° С„РѕСЂРјР°С‚Р° JSON, СЃ РЅРѕРІС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕР»РµР№.</param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public ActionResult<OpenLoop> UpdateOpenLoop(string id, OpenLoopRequest openLoopRequest)
+        public async Task<IActionResult> UpdateOpenLoop(string id, OpenLoopRequest openLoopRequest)
         {
             bool successParse = Guid.TryParse(id, out Guid guid);
             if (!successParse)
@@ -94,36 +88,33 @@ namespace ToDoList.API.Controllers
                 return BadRequest(id);
             }
 
-            successParse = DateTimeOffset.TryParse(openLoopRequest.СompletDate, out DateTimeOffset dateTimeOffset);
+            successParse = DateTimeOffset.TryParse(openLoopRequest.CompleteDate, out DateTimeOffset dateTimeOffset);
             if (!successParse)
             {
-                return BadRequest(openLoopRequest.СompletDate);
+                return BadRequest(openLoopRequest.CompleteDate);
             }
 
-            var openLoopToUpdate = _openLoopDbContext.OpenLoop.FirstOrDefault(a => a.Id.Equals(guid));
-            if (openLoopToUpdate == null)
+            var openLoopToUpdate = new OpenLoop()
             {
-                return NotFound();
-            }
+                Id = guid,
+                Note = openLoopRequest.Note,
+                Description = openLoopRequest.Description,
+                CompleteDateUtc = dateTimeOffset.UtcDateTime,
+                Complete = openLoopRequest.Complete
+            };
 
-            openLoopToUpdate.Description = openLoopRequest.Description;
-            openLoopToUpdate.Note = openLoopRequest.Note;
-            openLoopToUpdate.СompletDateUtc = dateTimeOffset.UtcDateTime;
-            openLoopToUpdate.Сomplet = openLoopRequest.Сomplet;
+            var result = await openLoopService.UpdateAsync(openLoopToUpdate, User);
 
-            _openLoopDbContext.OpenLoop.Update(openLoopToUpdate);
-            _openLoopDbContext.SaveChanges();
-
-            return NoContent();
+            return result;
         }
 
         /// <summary>
-        /// Удаляет запись из БД.
+        /// РЈРґР°Р»СЏРµС‚ Р·Р°РїРёСЃСЊ РёР· Р‘Р”.
         /// </summary>
-        /// <param name="id">Идентификатор задачи которую следует удалить</param>
+        /// <param name="id">РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РґР°С‡Рё РєРѕС‚РѕСЂСѓСЋ СЃР»РµРґСѓРµС‚ СѓРґР°Р»РёС‚СЊ</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public ActionResult DeleteOpenLoop(string id)
+        public async Task<IActionResult> DeleteOpenLoop(string id)
         {
             bool successParse = Guid.TryParse(id, out Guid guid);
             if (!successParse)
@@ -131,18 +122,9 @@ namespace ToDoList.API.Controllers
                 return BadRequest(id);
             }
 
-            var openLoopToDelete = _openLoopDbContext.OpenLoop.FirstOrDefault(a => a.Id.Equals(guid));
+            var result = await openLoopService.DeleteAsync(guid, User);
 
-            if (openLoopToDelete == null)
-            {
-                return NotFound();
-            }
-
-            _openLoopDbContext.OpenLoop.Remove(openLoopToDelete);
-            _openLoopDbContext.SaveChanges();
-
-            return NoContent();
+            return result;
         }
-
     }
 }

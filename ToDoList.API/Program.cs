@@ -1,12 +1,17 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+п»їusing Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using ToDoList.API.Authorization;
+using ToDoList.API.Controllers;
+using ToDoList.API.Data;
 using ToDoList.API.Handlers;
 using ToDoList.API.Models;
+using ToDoList.API.Services;
 
 namespace ToDoList.API
 {
@@ -16,38 +21,39 @@ namespace ToDoList.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            //add OpenLoop db context
+            builder.Services.AddDbContext<OpenLoopDbContext>(options =>
+                options.UseNpgsql(builder.Configuration["ConnectionStrings:PostgreSQLOpenLoopsConnection"]));
+
             //add Auth db context
             builder.Services.AddDbContext<AuthDbContext>(options =>
                 options.UseNpgsql(builder.Configuration["ConnectionStrings:PostgreSQLAuthConnection"]));
-            builder.Services.AddIdentity<User, IdentityRole>()
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>()
                 .AddDefaultTokenProviders();
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
-                options.Password.RequireDigit = false;              //  Требовать хотя бы одну цифру
-                options.Password.RequireLowercase = false;          //  Требовать хотя бы одну маленькую букву
-                options.Password.RequireNonAlphanumeric = false;    //  Требовать хотя бы один символ отличающийся от буквенно-цифрового
-                options.Password.RequireUppercase = false;          //  Требовать хотя бы одну заглавную букву
-                options.Password.RequiredLength = 6;                //  Требовать минимальную длинну пароля
-                options.Password.RequiredUniqueChars = 1;           //  Требовать минимальное количество уникальных символов
+                options.Password.RequireDigit = false;              //  РўСЂРµР±РѕРІР°С‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРЅСѓ С†РёС„СЂСѓ
+                options.Password.RequireLowercase = false;          //  РўСЂРµР±РѕРІР°С‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРЅСѓ РјР°Р»РµРЅСЊРєСѓСЋ Р±СѓРєРІСѓ
+                options.Password.RequireNonAlphanumeric = false;    //  РўСЂРµР±РѕРІР°С‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ СЃРёРјРІРѕР» РѕС‚Р»РёС‡Р°СЋС‰РёР№СЃСЏ РѕС‚ Р±СѓРєРІРµРЅРЅРѕ-С†РёС„СЂРѕРІРѕРіРѕ
+                options.Password.RequireUppercase = false;          //  РўСЂРµР±РѕРІР°С‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРЅСѓ Р·Р°РіР»Р°РІРЅСѓСЋ Р±СѓРєРІСѓ
+                options.Password.RequiredLength = 6;                //  РўСЂРµР±РѕРІР°С‚СЊ РјРёРЅРёРјР°Р»СЊРЅСѓСЋ РґР»РёРЅРЅСѓ РїР°СЂРѕР»СЏ
+                options.Password.RequiredUniqueChars = 1;           //  РўСЂРµР±РѕРІР°С‚СЊ РјРёРЅРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓРЅРёРєР°Р»СЊРЅС‹С… СЃРёРјРІРѕР»РѕРІ
             });
-
-            //add OpenLoop db context
-            builder.Services.AddDbContext<OpenLoopDbContext>(options =>
-                options.UseNpgsql(builder.Configuration["ConnectionStrings:PostgreSQLOpenLoopsConnection"]));
 
             // Adding services to the container.
             builder.Services.AddControllers();
 
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = "SpecialScheme"; //  Используется в качестве схемы по умолчанию
+                options.DefaultAuthenticateScheme = "SpecialScheme"; //  РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ РєР°С‡РµСЃС‚РІРµ СЃС…РµРјС‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
                 options.DefaultChallengeScheme = "SpecialScheme";
                 options.DefaultScheme = "SpecialScheme";
             })
                             .AddScheme<SpecialAuthenticationSchemeOptions, SpecialAuthHandler>(
                                 "SpecialScheme", options => { });
+
 
             // Learn more about configuring Swagger/Open API at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -61,15 +67,15 @@ namespace ToDoList.API
                 {
                     Version = "v1",
                     Title = "Demo API",
-                    Description = "Демонстрационный API с идентификацией и пользовательским токеном JWT",
+                    Description = "Р”РµРјРѕРЅСЃС‚СЂР°С†РёРѕРЅРЅС‹Р№ API СЃ РёРґРµРЅС‚РёС„РёРєР°С†РёРµР№ Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРј С‚РѕРєРµРЅРѕРј JWT",
                     Contact = new OpenApiContact
                     {
-                        Name = "Пишите мне в Телеграмм",
+                        Name = "РџРёС€РёС‚Рµ РјРЅРµ РІ РўРµР»РµРіСЂР°РјРј",
                         Url = new Uri("https://t.me/brown_aleks")
                     },
                     License = new OpenApiLicense
                     {
-                        Name = "Тип лицензии ИКХССВ - Используйте Кто Хотите, Сами Себе Виноваты. =)",
+                        Name = "РўРёРї Р»РёС†РµРЅР·РёРё РРљРҐРЎРЎР’ - РСЃРїРѕР»СЊР·СѓР№С‚Рµ РљС‚Рѕ РҐРѕС‚РёС‚Рµ, РЎР°РјРё РЎРµР±Рµ Р’РёРЅРѕРІР°С‚С‹. =)",
                         Url = new Uri("https://example.com/license")
                     }
                 });
@@ -97,6 +103,18 @@ namespace ToDoList.API
                     }
                 });
             });
+            
+            builder.Services.AddScoped<OpenLoopService>();
+            builder.Services.AddScoped<AuthenticatedUser>();
+            builder.Services.AddScoped<IAuthorizationHandler, IsOpenLoopOwnerHandler>();
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanEditOpenLoop",
+                    policyBuilder => policyBuilder
+                        .AddRequirements(new IsOpenLoopOwnerRequirement()));
+            });
+
 
             var app = builder.Build();
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ToDoList.API.Migrations
+namespace ToDoList.API.Migrations.OpenLoopDb
 {
     /// <inheritdoc />
     public partial class OpenLoopDb : Migration
@@ -19,8 +19,10 @@ namespace ToDoList.API.Migrations
                     Note = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     CreatedDateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    СompletDateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Сomplet = table.Column<bool>(type: "boolean", nullable: false)
+                    CompleteDateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Complete = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatorId = table.Column<string>(type: "text", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

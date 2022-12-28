@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ToDoList.API.Models
+namespace ToDoList.API.Data
 {
-    public class User : IdentityUser
+    public class AppUser : IdentityUser
     {
         public string? DisplayName { get; set; }
         public DateTime? DateOfBirth { get; set; }

@@ -4,6 +4,7 @@ using System.Text;
 using ToDoList.API.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using ToDoList.API.Data;
 
 namespace ToDoList.API.Handlers
 {
@@ -67,7 +68,7 @@ namespace ToDoList.API.Handlers
             return principal;
         }
 
-        public SpecialSecurityToken GetAccessToken(User user, IConfiguration config)
+        public SpecialSecurityToken GetAccessToken(AppUser user, IConfiguration config)
         {
             //создание claims на основе информации о пользователе
             var claims = new[] {
@@ -89,7 +90,7 @@ namespace ToDoList.API.Handlers
             return token;
         }
 
-        public string GetRefreshToken(UserManager<User> userManager)
+        public string GetRefreshToken(UserManager<AppUser> userManager)
         {
             var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             var tokenIsUnique = !userManager.Users.Any(u => u.RefreshToken == token);   //  проверяем что токен уникален, проверив db
