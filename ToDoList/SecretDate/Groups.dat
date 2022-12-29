@@ -1,0 +1,44 @@
+[
+  {
+    "Id": "2cbc4ecb-2755-4f94-9f71-53d4be10a178",
+    "Name": "beginners",
+    "Description": "Группа начинающих.",
+    "UsrsId": [
+      "914b7127-1fb3-4e5b-9321-b0a3f54a4630",
+      "1b75186e-1549-4fb5-ab48-ee5334e9ea84",
+      "5ab8df46-0066-4c68-be30-5b2be16e0aaa"
+    ],
+    "ActionsKey": [
+      "C",
+      "R"
+    ]
+  },
+  {
+    "Id": "cdd3b849-fb6a-4137-9185-a7d6a89f7f6c",
+    "Name": "moderators",
+    "Description": "Группа модераторов.",
+    "UsrsId": [
+      "914b7127-1fb3-4e5b-9321-b0a3f54a4630",
+      "1b75186e-1549-4fb5-ab48-ee5334e9ea84"
+    ],
+    "ActionsKey": [
+      "C",
+      "R",
+      "U"
+    ]
+  },
+  {
+    "Id": "52e4321b-4bf6-4a68-9d18-c43685efa8f1",
+    "Name": "administrators",
+    "Description": "Группа администраторов.",
+    "UsrsId": [
+      "914b7127-1fb3-4e5b-9321-b0a3f54a4630"
+    ],
+    "ActionsKey": [
+      "C",
+      "R",
+      "U",
+      "D"
+    ]
+  }
+]
